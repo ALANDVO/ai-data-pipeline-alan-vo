@@ -1,0 +1,1 @@
+from connectors.registry import connector_registry
