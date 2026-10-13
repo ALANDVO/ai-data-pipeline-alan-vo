@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "name": "ai-data-pipeline-alan-vo",
+  "owner": "ALANDVO",
+  "email": "alanvo@gmail.com",
+  "domain": "AI Data Pipeline Orchestration",
+  "summary": "Work in progress: ai-data-pipeline-alan-vo",
+  "workflows": [
+    "Design and execute visual DAG pipelines with drag-and-drop builder",
+    "LLM-powered schema inference and anomaly detection on sample data",
+    "Data quality scoring across completeness, accuracy, consistency, timeliness",
+    "Multi-cloud connector management (S3, GCS, BigQuery, PostgreSQL)"
+  ],
+  "auth": "oidc-keycloak-saml-broker",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "status": "work-in-progress"
+}

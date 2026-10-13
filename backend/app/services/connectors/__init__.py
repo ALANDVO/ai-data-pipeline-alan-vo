@@ -1,0 +1,3 @@
+from backend.app.services.connectors.registry import connector_registry
+
+__all__ = ["connector_registry"]
