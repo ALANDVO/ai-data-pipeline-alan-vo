@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-data-pipeline-alan-vo"
+version = "1.0.0"
+description = "Enterprise AI-powered data pipeline orchestrator with visual DAG builder, LLM schema inference, data quality scoring, and multi-cloud connectors."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Alan Vo", email = "alanvo@gmail.com"}
+]
+maintainers = [
+    {name = "Alan Vo", email = "alanvo@gmail.com"}
+]
+keywords = ["data-pipeline", "etl", "dag", "llm", "ai", "data-quality", "orchestration"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "pydantic>=2.5.0",
+    "python-jose[cryptography]>=3.3.0",
+    "python-multipart>=0.0.6",
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+    "httpx>=0.25.0",
+    "aiofiles>=23.2.1",
+    "boto3>=1.28.0",
+    "google-cloud-storage>=2.13.0",
+    "google-cloud-bigquery>=3.13.0",
+    "psycopg2-binary>=2.9.0",
+    "numpy>=1.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.25.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["backend"]
+asyncio_mode = "auto"
