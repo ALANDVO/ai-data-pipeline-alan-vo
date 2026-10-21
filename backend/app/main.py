@@ -4,13 +4,15 @@ import sys, os, logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-
 from backend.app.core.config import settings
 from backend.app.core.utils.logging import setup_logging
 from backend.app.api.routes import router as api_router
+from backend.app.core.database import init_db
 
 logging.basicConfig(level=getattr(logging, settings.log_level, logging.INFO))
 logger = logging.getLogger(__name__)
+
+init_db()
 
 app = FastAPI(
     title="AI Data Pipeline Orchestrator",

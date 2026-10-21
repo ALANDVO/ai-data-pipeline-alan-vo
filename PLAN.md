@@ -29,12 +29,16 @@ Tests: `backend/tests/test_core.py (13 tests)`, `frontend/src/pages/Quality.test
 
 ### sqlite-persistence — SQLite persistent storage for pipelines and jobs
 
-Status: in_progress
+Status: done
 
 Acceptance:
 - Pipelines and jobs persisted to SQLite database
 - Survives container restarts
 - Alembic migrations for schema management
+
+Implementation: `backend/app/models/database.py`, `backend/app/core/database.py`, `backend/app/services/orchestrator/engine.py`, `backend/app/services/orchestrator/scheduler.py`, `backend/app/services/monitoring/quality.py`, `backend/app/services/monitoring/metrics.py`, `backend/requirements.txt`
+
+Tests: `backend/tests/test_core.py (13 tests)`
 
 ### oidc-keycloak-auth — Real OIDC/Keycloak authentication
 
