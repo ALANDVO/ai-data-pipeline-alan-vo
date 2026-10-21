@@ -33,9 +33,10 @@ class DAGValidator:
         topo = self._topological_sort(node_ids, adj, indegree)
         if topo is None:
             errors.append("DAG contains a cycle")
-            return {"valid": False, "errors": errors, "topological_order": []}
+            return {"valid": False, "errors": errors, "topological_order": [], "topological_levels": []}
 
-        return {"valid": len(errors) == 0, "errors": errors, "topological_order": topo}
+        levels = self.get_execution_groups(nodes, edges)
+        return {"valid": len(errors) == 0, "errors": errors, "topological_order": topo, "topological_levels": levels}
 
     def _topological_sort(self, node_ids: Set[str], adj: Dict[str, List[str]], indegree: Dict[str, int]) -> Optional[List[str]]:
         queue = deque([n for n in node_ids if indegree.get(n, 0) == 0])

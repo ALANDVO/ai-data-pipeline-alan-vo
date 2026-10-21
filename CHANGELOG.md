@@ -1,11 +1,30 @@
 # Changelog
 
-## 1.1.0 — work-in-progress checkpoint
+## 1.2.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
 
-All notable changes to this project will be documented in this file.
+## 1.1.0 — 2026-10-21
 
+### Added
+- SQLite persistent storage for pipelines, jobs, tasks, quality scores, and logs
+- SQLAlchemy ORM models with JSON serialization for complex fields (nodes, edges, output, details, context)
+- Database initialization and automatic table creation on startup
+- Demo data seeding for pipelines, quality scores, and logs
+- SQLAlchemy and Alembic dependencies
+
+### Changed
+- Migrated pipeline engine from in-memory dict to SQLite persistent storage
+- Migrated job scheduler from in-memory dict to SQLite persistent storage
+- Migrated quality scorer from in-memory list to SQLite persistent storage
+- Migrated metrics collector from in-memory list to SQLite persistent storage
+- Updated `backend/requirements.txt` with `sqlalchemy>=2.0.0` and `alembic>=1.12.0`
+
+### Fixed
+- Pipeline and job data now survives container restarts
+- All 13 backend tests passing with persistent storage
+
+## [1.0.0] - 2026-10-13
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
