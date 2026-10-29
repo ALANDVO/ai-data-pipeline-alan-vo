@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-sqlite-persistence
+oidc-keycloak-auth
 
 ## Roadmap
 
@@ -42,7 +42,7 @@ Tests: `backend/tests/test_core.py (13 tests)`
 
 ### oidc-keycloak-auth — Real OIDC/Keycloak authentication
 
-Status: planned
+Status: in_progress
 
 Acceptance:
 - Authorization code flow with PKCE

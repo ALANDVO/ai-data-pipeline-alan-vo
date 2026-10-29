@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './auth/AuthContext'
 import Login from './pages/Login'
+import Callback from './pages/Callback'
 import Pipelines from './pages/Pipelines'
 import PipelineBuilder from './pages/PipelineBuilder'
 import Jobs from './pages/Jobs'
@@ -25,6 +26,7 @@ export default function App() {
       <Header />
       <main className="app-main">
         <Routes>
+          <Route path="/callback" element={<Callback />} />
           <Route path="/" element={<Navigate to="/pipelines" replace />} />
           <Route path="/pipelines" element={<Pipelines />} />
           <Route path="/pipelines/build" element={<PipelineBuilder />} />
