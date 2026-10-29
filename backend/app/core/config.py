@@ -13,6 +13,11 @@ class Settings(BaseModel):
     llm_api_key: str = ""
     llm_base_url: str = "https://api.openai.com/v1"
     llm_model: str = "gpt-4o"
+    # OIDC/Keycloak settings
+    oidc_issuer_url: str = "http://localhost:8080/realms/pipeline-realm"
+    oidc_client_id: str = "pipeline-frontend"
+    oidc_client_secret: str = ""
+    oidc_redirect_uri: str = "http://localhost:8000/api/auth/callback"
     oauth_client_id: str = ""
     oauth_client_secret: str = ""
     oauth_redirect_uri: str = ""
@@ -42,6 +47,10 @@ settings = Settings(
     llm_api_key=os.getenv("LLM_API_KEY", ""),
     llm_base_url=os.getenv("LLM_BASE_URL", "https://api.openai.com/v1"),
     llm_model=os.getenv("LLM_MODEL", "gpt-4o"),
+    oidc_issuer_url=os.getenv("OIDC_ISSUER_URL", "http://localhost:8080/realms/pipeline-realm"),
+    oidc_client_id=os.getenv("OIDC_CLIENT_ID", "pipeline-frontend"),
+    oidc_client_secret=os.getenv("OIDC_CLIENT_SECRET", ""),
+    oidc_redirect_uri=os.getenv("OIDC_REDIRECT_URI", "http://localhost:8000/api/auth/callback"),
     oauth_client_id=os.getenv("OAUTH_CLIENT_ID", ""),
     oauth_client_secret=os.getenv("OAUTH_CLIENT_SECRET", ""),
     oauth_redirect_uri=os.getenv("OAUTH_REDIRECT_URI", ""),

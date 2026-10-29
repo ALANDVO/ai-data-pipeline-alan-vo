@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from typing import List, Optional
 from pydantic import BaseModel
 import time
 
-from backend.app.api.auth import get_current_user, User
+from backend.app.api.auth import get_current_user, User, oidc_callback
 from backend.app.api.schemas import (
     Pipeline, PipelineCreate, Job, JobResponse,
     QualityScore, LogEntry, SchemaInference, ConnectorInfo,
@@ -124,3 +124,29 @@ async def get_connectors(user: User = Depends(get_current_user)):
 async def detect_anomaly(req: SchemaInferRequest, user: User = Depends(get_current_user)):
     result = await schema_validator.detect_anomalies(req.sample_rows)
     return result
+
+@router.get("/auth/callback")
+async def oidc_auth_callback(request: Request):
+    """OIDC authorization code callback endpoint."""
+    return await oidc_callback(request)
+
+
+@router.post("/auth/logout")
+async def oidc_logout(request: Request, user: User = Depends(get_current_user)):
+    """Initiate OIDC logout - returns Keycloak logout URL."""
+    from backend.app.api.oidc import build_logout_url
+    from backend.app.core.config import settings
+
+    # Get id_token from request body if provided
+    body = await request.json()
+    id_token_hint = body.get("id_token_hint")
+    post_logout_redirect_uri = body.get("post_logout_redirect_uri", "http://localhost:3000")
+
+    logout_url = build_logout_url(id_token_hint=id_token_hint, post_logout_redirect_uri=post_logout_redirect_uri)
+    return {"logout_url": logout_url}
+
+
+@router.get("/auth/me")
+async def get_current_user_info(user: User = Depends(get_current_user)):
+    """Get current authenticated user info."""
+    return {"email": user.email, "name": user.name, "role": user.role}
