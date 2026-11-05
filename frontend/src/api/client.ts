@@ -1,9 +1,11 @@
+import { getStoredToken } from '../auth/AuthContext'
+
 const BASE = ''
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json', ...(options?.headers as Record<string, string>) }
-  const token = localStorage.getItem('token')
-  if (token) headers['Authorization'] = `Bearer ${token}`
+  const tokenData = getStoredToken()
+  if (tokenData?.accessToken) headers['Authorization'] = `Bearer ${tokenData.accessToken}`
   const res = await fetch(BASE + path, { ...options, headers })
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }))
