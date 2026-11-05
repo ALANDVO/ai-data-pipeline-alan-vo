@@ -42,14 +42,18 @@ Tests: `backend/tests/test_core.py (13 tests)`
 
 ### oidc-keycloak-auth — Real OIDC/Keycloak authentication
 
-Status: in_progress
+Status: done
 
 Acceptance:
 - Authorization code flow with PKCE
 - Keycloak realm import configuration
 - Backend token validation with issuer/audience check
-- Frontend SPA PKCE client with in-memory tokens
+- Frontend SPA PKCE client with in-memory tokens and automatic refresh
 - Logout with Keycloak end-session endpoint
+
+Implementation: `backend/app/api/oidc.py`, `backend/app/api/auth.py`, `backend/app/api/routes.py`, `frontend/src/auth/AuthContext.tsx`, `frontend/src/api/client.ts`, `frontend/src/vite-env.d.ts`, `keycloak/realm-export.json`
+
+Tests: `backend/tests/test_core.py (13 tests)`, `frontend/src/pages/Quality.test.tsx (6 tests)`
 
 ### complete-test-suite — Complete test suite (12 backend, 3 frontend)
 

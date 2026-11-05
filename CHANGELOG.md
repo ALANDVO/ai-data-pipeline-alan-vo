@@ -1,8 +1,30 @@
 # Changelog
 
-## 1.3.0 — work-in-progress checkpoint
+## 1.4.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+## 1.3.0 — work-in-progress checkpoint
+
+### Added
+- Frontend SPA PKCE client with in-memory token storage and automatic refresh
+- Refresh token handling with scheduled background token renewal
+- Token expiry tracking with 1-minute pre-expiry refresh trigger
+- Fallback to localStorage for page refresh recovery of valid tokens
+- `offline_access` scope for refresh token issuance from Keycloak
+- Vite environment type declarations for ImportMeta.env
+
+### Changed
+- AuthContext: moved from localStorage-only to hybrid in-memory + localStorage token storage
+- AuthContext: added automatic token refresh with setTimeout scheduling
+- AuthContext: added `isAuthenticated` flag to AuthState
+- API client: now reads access token from shared token storage module
+- Login scope: added `offline_access` to request refresh tokens
+
+### Fixed
+- Token persistence across page reloads via localStorage fallback
+- Memory leak prevention: clear refresh timer on logout/unmount
+- Token refresh failures trigger automatic logout
 
 ## 1.2.0 — work-in-progress checkpoint
 
