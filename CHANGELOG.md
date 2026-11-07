@@ -92,3 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SAML identity broker documentation
 - Pipeline template marketplace
 - Webhook notifications for job events
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

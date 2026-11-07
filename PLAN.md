@@ -64,3 +64,6 @@ Acceptance:
 - 3+ frontend vitest tests for user-visible behavior
 - Tests mock external providers, no real credentials
 
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)
