@@ -105,12 +105,29 @@ class PipelineEngine:
     @staticmethod
     def _to_dict(record: PipelineModel) -> Dict[str, Any]:
         return {
-            "id": record.id, "name": record.name, "description": record.description,
-            "status": record.status, "nodes": record.get_nodes(), "edges": record.get_edges(),
-            "created_at": record.created_at, "updated_at": record.updated_at,
+            "id": record.id,
+            "name": record.name,
+            "description": record.description,
+            "status": record.status,
+            "nodes": record.get_nodes(),
+            "edges": record.get_edges(),
+            "created_at": record.created_at,
+            "updated_at": record.updated_at,
             "created_by": record.created_by,
-            "last_run_at": record.last_run_at, "last_status": record.last_status,
+            "last_run_at": record.last_run_at,
+            "last_status": record.last_status,
         }
+
+    def delete_pipeline(self, pipeline_id: str) -> bool:
+        """Delete a pipeline and all associated jobs/tasks."""
+        with get_db() as db:
+            record = db.query(PipelineModel).filter(PipelineModel.id == pipeline_id).first()
+            if not record:
+                return False
+            db.delete(record)
+            db.commit()
+        logger.info("Deleted pipeline %s", pipeline_id)
+        return True
 
 
 pipeline_engine = PipelineEngine()
