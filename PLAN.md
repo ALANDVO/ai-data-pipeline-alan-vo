@@ -57,12 +57,31 @@ Tests: `backend/tests/test_core.py (13 tests)`, `frontend/src/pages/Quality.test
 
 ### complete-test-suite — Complete test suite (12 backend, 3 frontend)
 
-Status: planned
+Status: done
 
 Acceptance:
 - 12+ meaningful backend pytest tests covering domain logic, auth, persistence
 - 3+ frontend vitest tests for user-visible behavior
 - Tests mock external providers, no real credentials
+
+Implementation: `backend/tests/test_core.py`, `frontend/src/pages/Quality.test.tsx`
+
+Tests: `backend/tests/test_core.py (13 tests)`, `frontend/src/pages/Quality.test.tsx (6 tests)`
+
+### pipeline-deletion — Pipeline deletion API and UI
+
+Status: in_progress
+
+Acceptance:
+- DELETE /api/pipelines/{pipeline_id} endpoint with authentication
+- Pipeline engine delete_pipeline method with cascade delete
+- Frontend API client deletePipeline method
+- Delete button in Pipelines page with confirmation dialog
+- All existing tests pass
+
+Implementation: `backend/app/services/orchestrator/engine.py`, `backend/app/api/routes.py`, `frontend/src/api/client.ts`, `frontend/src/pages/Pipelines.tsx`
+
+Tests: `backend/tests/test_core.py (13 tests)`, `frontend/src/pages/Quality.test.tsx (6 tests)`
 
 ---
 

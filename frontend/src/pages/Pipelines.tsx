@@ -21,6 +21,7 @@ export default function Pipelines() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [running, setRunning] = useState('')
+  const [deleting, setDeleting] = useState('')
 
   const load = useCallback(async () => {
     setLoading(true); setError('')
@@ -40,6 +41,16 @@ export default function Pipelines() {
       await api.runPipeline(id)
     } catch (e: any) { alert(e.message) }
     finally { setRunning('') }
+  }
+
+  const deletePipeline = async (id: string, name: string) => {
+    if (!window.confirm(`Delete pipeline "${name}"? This cannot be undone.`)) return
+    setDeleting(id)
+    try {
+      await api.deletePipeline(id)
+      setPipelines(pipelines.filter(p => p.id !== id))
+    } catch (e: any) { alert(e.message) }
+    finally { setDeleting('') }
   }
 
   const statusBadge = (s: string | null) => {
@@ -84,6 +95,9 @@ export default function Pipelines() {
                 <Link to={`/pipelines/${p.id}`} className="btn-secondary btn-sm">View</Link>
                 <button className="btn-primary btn-sm" disabled={running === p.id} onClick={() => runPipeline(p.id)}>
                   {running === p.id ? 'Running…' : '▶ Run'}
+                </button>
+                <button className="btn-error btn-sm" disabled={deleting === p.id} onClick={() => deletePipeline(p.id, p.name)}>
+                  {deleting === p.id ? 'Deleting…' : '🗑 Delete'}
                 </button>
               </div>
             </div>

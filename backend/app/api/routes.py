@@ -50,6 +50,12 @@ async def get_pipeline(pipeline_id: str, user: User = Depends(get_current_user))
     if not pipeline:
         raise HTTPException(status_code=404, detail="Pipeline not found")
     return pipeline
+@router.delete("/pipelines/{pipeline_id}")
+async def delete_pipeline(pipeline_id: str, user: User = Depends(get_current_user)):
+    success = pipeline_engine.delete_pipeline(pipeline_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Pipeline not found")
+    return {"message": "Pipeline deleted successfully"}
 
 @router.post("/pipelines/{pipeline_id}/validate")
 async def validate_pipeline(pipeline_id: str, user: User = Depends(get_current_user)):

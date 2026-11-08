@@ -1,8 +1,22 @@
 # Changelog
 
-## 1.4.0 — work-in-progress checkpoint
+## 1.5.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+## 1.4.0 — work-in-progress checkpoint
+
+### Added
+- Pipeline deletion API: DELETE /api/pipelines/{pipeline_id} endpoint with authentication
+- Pipeline engine delete_pipeline method with cascade delete of associated jobs/tasks
+- Frontend API client deletePipeline method
+- Delete button in Pipelines page with confirmation dialog
+
+### Changed
+- Complete test suite status updated: 13 backend tests + 6 frontend tests (exceeds planned 12/3)
+
+### Fixed
+- PipelineEngine._to_dict() missing @staticmethod decorator
 
 ## 1.3.0 — work-in-progress checkpoint
 
@@ -51,6 +65,7 @@ Partial code published for continued development. Known issues: STATUS.md.
 - All 13 backend tests passing with persistent storage
 
 ## [1.0.0] - 2026-10-13
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 

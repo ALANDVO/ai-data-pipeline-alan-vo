@@ -21,6 +21,7 @@ export const api = {
   createPipeline: (data: any) => request<any>('/api/pipelines', { method: 'POST', body: JSON.stringify(data) }),
   validatePipeline: (id: string) => request<any>(`/api/pipelines/${id}/validate`, { method: 'POST' }),
   runPipeline: (id: string) => request<any>(`/api/pipelines/${id}/run`, { method: 'POST' }),
+  deletePipeline: (id: string) => request<any>(`/api/pipelines/${id}`, { method: 'DELETE' }),
   jobs: (params?: string) => request<any[]>(`/api/jobs${params ? '?' + params : ''}`),
   job: (id: string) => request<any>(`/api/jobs/${id}`),
   retryJob: (id: string) => request<any>(`/api/jobs/${id}/retry`, { method: 'POST' }),
