@@ -79,9 +79,7 @@ def test_quality_scorer_seed():
     assert all(0 <= s["overall"] <= 1 for s in scores)
 
 def test_quality_scorer_score():
-    score = quality_scorer.score("test-pipe", "test-dataset", {
-        "completeness": 0.9, "accuracy": 0.8, "consistency": 0.7, "timeliness": 0.6
-    })
+    score = quality_scorer.score("test-pipe", "test-dataset", {"completeness": 0.9, "accuracy": 0.8, "consistency": 0.7, "timeliness": 0.6})
     assert score["overall"] == pytest.approx(0.75, abs=0.01)
 
 def test_alert_evaluator():
@@ -98,3 +96,50 @@ def test_generate_id():
 def test_chunk_list():
     assert chunk_list([1, 2, 3, 4, 5], 2) == [[1, 2], [3, 4], [5]]
     assert chunk_list([], 3) == []
+
+def test_pipeline_engine_delete():
+    # Get initial pipeline count
+    pipelines_before = pipeline_engine.get_pipelines(limit=10)
+    initial_count = len(pipelines_before)
+    assert initial_count >= 2, "Expected at least 2 seeded pipelines"
+
+    # Delete a pipeline
+    pipeline_to_delete = pipelines_before[0]
+    pipeline_id = pipeline_to_delete["id"]
+    delete_result = pipeline_engine.delete_pipeline(pipeline_id)
+    assert delete_result is True, f"Failed to delete pipeline {pipeline_id}"
+
+    # Verify the pipeline is no longer accessible
+    deleted_pipeline = pipeline_engine.get_pipeline(pipeline_id)
+    assert deleted_pipeline is None, f"Pipeline {pipeline_id} should have been deleted"
+
+    # Verify pipeline list is updated
+    pipelines_after = pipeline_engine.get_pipelines(limit=10)
+    after_count = len(pipelines_after)
+    assert after_count == initial_count - 1, f"Pipeline count should have decreased by 1"
+
+    # Verify the deleted pipeline is not in the list
+    deleted_pipeline_in_list = any(p["id"] == pipeline_id for p in pipelines_after)
+    assert not deleted_pipeline_in_list, f"Deleted pipeline {pipeline_id} should not be in the list"
+
+    # Verify delete returns False for non-existent pipeline
+    fake_id = f"nonexistent-{generate_id("test")}"
+    assert delete_result is True, f"Failed to delete pipeline {pipeline_id}"
+
+    # Verify the pipeline is no longer accessible
+    deleted_pipeline = pipeline_engine.get_pipeline(pipeline_id)
+    assert deleted_pipeline is None, f"Pipeline {pipeline_id} should have been deleted"
+
+    # Verify pipeline list is updated
+    pipelines_after = pipeline_engine.get_pipelines(limit=10)
+    after_count = len(pipelines_after)
+    assert after_count == initial_count - 1, f"Pipeline count should have decreased by 1"
+
+    # Verify the deleted pipeline is not in the list
+    deleted_pipeline_in_list = any(p["id"] == pipeline_id for p in pipelines_after)
+    assert not deleted_pipeline_in_list, f"Deleted pipeline {pipeline_id} should not be in the list"
+
+    # Verify delete returns False for non-existent pipeline
+    fake_id = f"nonexistent-{generate_id("test")}"
+    assert pipeline_engine.delete_pipeline(fake_id) is False, f"Delete should return False for non-existent pipeline"
+
