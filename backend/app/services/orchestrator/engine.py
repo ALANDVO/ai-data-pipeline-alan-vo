@@ -17,54 +17,59 @@ class PipelineEngine:
         self._seed_demo_pipelines()
 
     def _seed_demo_pipelines(self):
-        """Seed demo pipelines if database is empty."""
+        """Seed demo pipelines if database has fewer than 2."""
         with get_db() as db:
             count = db.query(PipelineModel).count()
-            if count == 0:
-                demo_nodes = [
-                    {"id": "extract-orders", "type": "connector", "name": "Extract Orders", "config": {"source": "postgres", "table": "orders"}},
-                    {"id": "clean-orders", "type": "transform", "name": "Clean Orders", "config": {"nulls": "fill", "dedup": True}},
-                    {"id": "enrich-orders", "type": "llm", "name": "Enrich Orders", "config": {"task": "categorize"}},
-                    {"id": "load-warehouse", "type": "connector", "name": "Load to Warehouse", "config": {"target": "bigquery", "dataset": "analytics"}},
-                ]
-                demo_edges = [
-                    {"id": "e1", "source": "extract-orders", "target": "clean-orders"},
-                    {"id": "e2", "source": "clean-orders", "target": "enrich-orders"},
-                    {"id": "e3", "source": "enrich-orders", "target": "load-warehouse"},
-                ]
-                now = time.time()
-                record = PipelineModel(
-                    id="pipe-demo-orders", name="Orders ETL Pipeline",
-                    description="Extracts orders from Postgres, cleans, enriches with LLM, loads to BigQuery",
-                    status="active", created_at=now, updated_at=now, created_by="system",
-                    last_run_at=now - 3600, last_status="completed",
-                )
-                record.set_nodes(demo_nodes)
-                record.set_edges(demo_edges)
-                db.add(record)
+            if count < 2:
+                # Only add missing pipelines
+                existing_ids = {r.id for r in db.query(PipelineModel).all()}
 
-                demo2_nodes = [
-                    {"id": "fetch-logs", "type": "connector", "name": "Fetch Logs", "config": {"source": "s3", "path": "logs/"}},
-                    {"id": "parse-logs", "type": "transform", "name": "Parse Logs", "config": {"format": "json"}},
-                    {"id": "quality-check", "type": "quality", "name": "Quality Check", "config": {}},
-                ]
-                demo2_edges = [
-                    {"id": "e1", "source": "fetch-logs", "target": "parse-logs"},
-                    {"id": "e2", "source": "parse-logs", "target": "quality-check"},
-                ]
-                record2 = PipelineModel(
-                    id="pipe-demo-logs", name="Log Processing Pipeline",
-                    description="Fetches logs from S3, parses, and runs quality checks",
-                    status="active", created_at=now, updated_at=now, created_by="system",
-                )
-                record2.set_nodes(demo2_nodes)
-                record2.set_edges(demo2_edges)
-                db.add(record2)
+                if "pipe-demo-orders" not in existing_ids:
+                    demo_nodes = [
+                        {"id": "extract-orders", "type": "connector", "name": "Extract Orders", "config": {"source": "postgres", "table": "orders"}},
+                        {"id": "clean-orders", "type": "transform", "name": "Clean Orders", "config": {"nulls": "fill", "dedup": True}},
+                        {"id": "enrich-orders", "type": "llm", "name": "Enrich Orders", "config": {"task": "categorize"}},
+                        {"id": "load-warehouse", "type": "connector", "name": "Load to Warehouse", "config": {"target": "bigquery", "dataset": "analytics"}},
+                    ]
+                    demo_edges = [
+                        {"id": "e1", "source": "extract-orders", "target": "clean-orders"},
+                        {"id": "e2", "source": "clean-orders", "target": "enrich-orders"},
+                        {"id": "e3", "source": "enrich-orders", "target": "load-warehouse"},
+                    ]
+                    now = time.time()
+                    record = PipelineModel(
+                        id="pipe-demo-orders", name="Orders ETL Pipeline",
+                        description="Extracts orders from Postgres, cleans, enriches with LLM, loads to BigQuery",
+                        status="active", created_at=now, updated_at=now, created_by="system",
+                        last_run_at=now - 3600, last_status="completed",
+                    )
+                    record.set_nodes(demo_nodes)
+                    record.set_edges(demo_edges)
+                    db.add(record)
+
+                if "pipe-demo-logs" not in existing_ids:
+                    demo2_nodes = [
+                        {"id": "fetch-logs", "type": "connector", "name": "Fetch Logs", "config": {"source": "s3", "path": "logs/"}},
+                        {"id": "parse-logs", "type": "transform", "name": "Parse Logs", "config": {"format": "json"}},
+                        {"id": "quality-check", "type": "quality", "name": "Quality Check", "config": {}},
+                    ]
+                    demo2_edges = [
+                        {"id": "e1", "source": "fetch-logs", "target": "parse-logs"},
+                        {"id": "e2", "source": "parse-logs", "target": "quality-check"},
+                    ]
+                    record2 = PipelineModel(
+                        id="pipe-demo-logs", name="Log Processing Pipeline",
+                        description="Fetches logs from S3, parses, and runs quality checks",
+                        status="active", created_at=now, updated_at=now, created_by="system",
+                    )
+                    record2.set_nodes(demo2_nodes)
+                    record2.set_edges(demo2_edges)
+                    db.add(record2)
                 db.commit()
-                logger.info("Seeded demo pipelines")
-
+                logger.info("Seeded demo pipelines (count was %s, now %s)", count, db.query(PipelineModel).count())
     def create_pipeline(self, data: Any, created_by: str = "") -> Dict[str, Any]:
         pid = generate_id("pipe")
+
         now = time.time()
         record = PipelineModel(
             id=pid, name=data.name, description=data.description,
@@ -124,6 +129,9 @@ class PipelineEngine:
             record = db.query(PipelineModel).filter(PipelineModel.id == pipeline_id).first()
             if not record:
                 return False
+            # Explicitly delete associated jobs and tasks for cascade reliability
+            for job in record.jobs:
+                db.delete(job)
             db.delete(record)
             db.commit()
         logger.info("Deleted pipeline %s", pipeline_id)
