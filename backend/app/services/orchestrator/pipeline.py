@@ -25,9 +25,7 @@ class DAGValidator:
                 indegree[e["target"]] += 1
 
         for nid in node_ids:
-            if indegree[nid] == 0 and nid not in adj:
-                pass
-            elif nid not in indegree and nid not in adj:
+            if indegree.get(nid, 0) == 0 and nid not in adj:
                 errors.append(f"Node {nid} is isolated (no incoming or outgoing edges)")
 
         topo = self._topological_sort(node_ids, adj, indegree)
