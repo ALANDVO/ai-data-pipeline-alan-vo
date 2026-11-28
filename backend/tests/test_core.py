@@ -26,6 +26,14 @@ def test_dag_validator_cycle():
     assert result["valid"] is False
     assert any("cycle" in e.lower() for e in result["errors"])
 
+def test_dag_validator_isolated_node():
+    validator = DAGValidator()
+    nodes = [{"id": "a"}, {"id": "b"}, {"id": "c"}]
+    edges = [{"id": "e1", "source": "a", "target": "b"}]
+    result = validator.validate(nodes, edges)
+    assert result["valid"] is False
+    assert any("isolated" in e.lower() and "c" in e for e in result["errors"])
+
 def test_dag_execution_groups():
     validator = DAGValidator()
     nodes = [{"id": "a"}, {"id": "b"}, {"id": "c"}, {"id": "d"}]
